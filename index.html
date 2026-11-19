@@ -9,10 +9,10 @@
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0b'/%3E%3Cpath d='M6.5 12.2Q8 10 11 10q5 0 5 4v10M16 17.2h-4.6Q6.5 17.2 6.5 20.7T11.2 24.2q3.3 0 4.8-2.6' fill='none' stroke='%23e8f0e8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='19.5' y='8' width='6.5' height='16.5' fill='%2300ff41'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@400;600&family=Mulish:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0b;--bg2:#0d120e;--bg3:#121a14;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.13);--text:#e8f0e8;--muted:#7a857c;--g:#00ff41;--g2:#00b82e;--warn:#e8c45a;--red:#ff6b5a;
---head:'Unbounded',sans-serif;--body:'Mulish',sans-serif;--mono:'JetBrains Mono',monospace}
+--head:'Manrope',sans-serif;--body:'Manrope',sans-serif;--mono:'JetBrains Mono',monospace}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -110,6 +110,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .mob button{white-space:nowrap;padding:7px 12px;border:1px solid var(--line2);border-radius:999px;font-size:12.5px}
 .mob button.on{border-color:var(--g);color:var(--g)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* responsive v2 */
+.app{grid-template-columns:minmax(0,1fr)}.app>*,.main>*{min-width:0}
+@media(max-width:860px){.main{grid-template-columns:minmax(0,1fr)!important}}
+@media(max-width:640px){
+.app{padding:0 12px 16px}
+.top{height:auto;flex-wrap:wrap;gap:8px 12px;padding:12px 0}
+.top>div:first-child{gap:10px!important;min-width:0;flex-wrap:wrap}
+.ttl{flex-wrap:wrap;gap:6px;font-size:11px}.ttl span[data-i]{display:none}
+.right{gap:8px;margin-left:auto}.back{font-size:11px}
+.lang button{padding:8px 12px}
+.note{font-size:11px;line-height:1.5}
+button,.btn{min-height:40px}
+}
 </style>
 </head>
 <body>
@@ -295,7 +309,12 @@ apply();hardReset();
 <script>
 (function(){
   var YM_ID=114360768, GA_ID='G-7B459D4QSM';           // <- set real IDs
+  window.aweBeacon=function(name,d){
+    try{var q='e='+encodeURIComponent(name)+'&p='+encodeURIComponent(location.pathname)+'&d='+encodeURIComponent(d||'');
+      if(navigator.sendBeacon)navigator.sendBeacon('https://awelabs.io/t?'+q);else new Image().src='https://awelabs.io/t?'+q}catch(e){}
+  };
   window.aweGoal=function(name,params){
+    aweBeacon(name,params&&(params.demo||params.repo||params.lang));
     try{if(YM_ID&&window.ym)ym(YM_ID,'reachGoal',name,params||{})}catch(e){}
     try{if(GA_ID&&window.gtag)gtag('event',name,params||{})}catch(e){}
   };
@@ -311,6 +330,7 @@ apply();hardReset();
     window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};
     gtag('js',new Date());gtag('config',GA_ID,{anonymize_ip:true});
   }
+  aweBeacon('pv',document.referrer?document.referrer.split('/')[2]:'');
   // goals: contacts, demos, GitHub, language switch
   document.addEventListener('click',function(e){
     var a=e.target.closest('a,button');if(!a)return;var h=a.getAttribute('href')||'';
@@ -320,6 +340,7 @@ apply();hardReset();
     else if(h.indexOf('/demo/')>-1||h.indexOf('crm-demo')>-1)aweGoal('open_demo',{demo:h.split('/').filter(Boolean).pop()});
     else if(h.indexOf('github.com')>-1)aweGoal('open_github',{repo:h.split('/').pop()});
     else if(a.dataset&&a.dataset.set)aweGoal('lang_switch',{lang:a.dataset.set});
+    else if(a.tagName==='BUTTON')aweBeacon('button',a.id||a.getAttribute('data-i')||(a.textContent||'').trim().slice(0,30));
   },true);
 })();
 </script>
