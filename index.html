@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AweLabs - квалификатор лидов (демо)</title>
+<meta name="description" content="Демо AweLabs: AI-бот отвечает на обращения с площадки объявлений, выясняет задачу и бюджет, держит прайс и передаёт специалисту только целевых клиентов.">
+<meta name="theme-color" content="#0a0a0b">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0b'/%3E%3Cpath d='M6.5 12.2Q8 10 11 10q5 0 5 4v10M16 17.2h-4.6Q6.5 17.2 6.5 20.7T11.2 24.2q3.3 0 4.8-2.6' fill='none' stroke='%23e8f0e8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='19.5' y='8' width='6.5' height='16.5' fill='%2300ff41'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@400;600&family=Mulish:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0b;--bg2:#0d120e;--bg3:#121a14;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.13);--text:#e8f0e8;--muted:#7a857c;--g:#00ff41;--g2:#00b82e;--warn:#e8c45a;--red:#ff6b5a;
+--head:'Unbounded',sans-serif;--body:'Mulish',sans-serif;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse at 50% 0%,#000 20%,transparent 70%);opacity:.6}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.app{position:relative;display:grid;grid-template-rows:auto auto 1fr;height:100vh;max-width:1400px;margin:0 auto;padding:0 20px 20px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px;border-bottom:1px solid var(--line)}
+.logo{font:700 18px var(--mono);display:flex;align-items:center}.logo .u{color:var(--g)}
+.cur{display:inline-block;width:.55em;height:1.05em;background:var(--g);margin-left:4px;box-shadow:0 0 10px rgba(0,255,65,.5);animation:bl 1.05s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.ttl{font:12px var(--mono);color:var(--muted);display:flex;align-items:center;gap:10px}.ttl b{color:var(--text);font-weight:500}
+.pill{border:1px solid rgba(0,255,65,.35);color:var(--g);border-radius:999px;padding:3px 10px;font:11px var(--mono)}
+.right{display:flex;align-items:center;gap:10px}
+.lang{display:flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden}
+.lang button{color:var(--muted);font:500 12px var(--mono);padding:6px 12px}.lang button.on{background:var(--g);color:var(--bg)}
+.back{font:12px var(--mono);color:var(--muted)}.back:hover{color:var(--g)}
+.note{margin:14px 0;padding:10px 14px;border:1px dashed var(--line2);border-radius:10px;font:12px var(--mono);color:var(--muted)}
+.note b{color:var(--text);font-weight:500}
+
+.main{display:grid;grid-template-columns:280px 1fr 380px;gap:16px;min-height:0}
+.panel{background:var(--bg2);border:1px solid var(--line);border-radius:16px;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.ph{padding:14px 16px;border-bottom:1px solid var(--line);font:12px var(--mono);color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.side{padding:16px;gap:18px;overflow:auto}
+.side h4{font:11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.sc{display:flex;flex-direction:column;gap:8px}
+.sc button{text-align:left;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--bg);transition:.2s}
+.sc button b{display:block;font-weight:600;font-size:14px}
+.sc button span{font-size:12.5px;color:var(--muted)}
+.sc button:hover{border-color:rgba(0,255,65,.5)}
+.sc button.on{border-color:var(--g);background:rgba(0,255,65,.07)}
+.sc button.on b{color:var(--g)}
+.sc button:disabled{cursor:default}
+.sc button:disabled:not(.on){opacity:.45}
+.rate{list-style:none;font-size:13px;display:flex;flex-direction:column;gap:6px}
+.rate li{display:flex;justify-content:space-between;gap:10px;color:var(--muted)}
+.rate li b{color:var(--text);font:500 12px var(--mono);white-space:nowrap}
+.rule{font-size:12.5px;color:var(--muted);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.rule b{color:var(--g);font-weight:600}
+
+.adhd{display:flex;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.adimg{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--bg3),rgba(0,255,65,.15));border:1px solid var(--line2);display:grid;place-items:center;font:700 13px var(--mono);color:var(--g)}
+.adhd b{display:block;font-size:14px;font-weight:600}
+.adhd span{font:11px var(--mono);color:var(--muted)}
+.chat{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.day{align-self:center;font:11px var(--mono);color:var(--muted);padding:4px 12px;border:1px solid var(--line);border-radius:999px}
+.m{max-width:78%;padding:10px 14px;border-radius:14px;animation:in .3s ease;font-size:14.5px}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.m.c{background:var(--bg3);border:1px solid var(--line2);border-bottom-left-radius:4px}
+.m.b{align-self:flex-end;background:rgba(0,255,65,.07);border:1px solid rgba(0,255,65,.25);border-bottom-right-radius:4px}
+.m small{display:flex;justify-content:space-between;gap:14px;font:10.5px var(--mono);color:var(--muted);margin-bottom:3px}
+.m.b small{color:var(--g)}
+.m .tag{display:inline-block;margin-top:6px;font:10.5px var(--mono);color:var(--muted);border:1px dashed var(--line2);border-radius:6px;padding:2px 7px}
+.typing{align-self:flex-end;display:flex;gap:4px;padding:12px 14px;border-radius:14px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.18)}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--g);animation:dot 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.typing.c{align-self:flex-start;background:var(--bg3);border-color:var(--line2)}.typing.c i{background:var(--muted)}
+.inp{border-top:1px solid var(--line);padding:12px;display:flex;gap:10px;align-items:center}
+.inp .f{flex:1;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--bg);color:var(--muted);font-size:13.5px}
+.go{padding:12px 18px;border-radius:12px;background:var(--g);color:var(--bg);font-weight:600;font-size:14px;white-space:nowrap}
+.go:disabled{opacity:.4;cursor:default}
+
+.rp{overflow:auto;padding:16px;gap:14px}
+.box{border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:14px}
+.box h5{font:11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.st{font:11px var(--mono);padding:3px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--muted);text-transform:none;letter-spacing:0}
+.st.hot{color:var(--g);border-color:rgba(0,255,65,.45);background:rgba(0,255,65,.08)}
+.st.warm{color:var(--warn);border-color:rgba(232,196,90,.45);background:rgba(232,196,90,.07)}
+.st.off{color:var(--red);border-color:rgba(255,107,90,.4);background:rgba(255,107,90,.06)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+.kv dd{text-align:right;min-height:1.2em}
+.kv dd.fill{animation:fl .6s}
+@keyframes fl{from{color:var(--g)}}
+.steps{list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.steps li{color:var(--muted);display:flex;gap:8px}.steps li::before{content:"○";font-family:var(--mono)}
+.steps li.ok{color:var(--text)}.steps li.ok::before{content:"✓";color:var(--g)}
+.steps li.no{color:var(--text)}.steps li.no::before{content:"✕";color:var(--red)}
+.tg{border:1px solid rgba(0,255,65,.3);border-radius:14px;background:rgba(0,255,65,.04);padding:14px;animation:in .35s;font-size:13.5px}
+.tg .h{display:flex;align-items:center;gap:8px;font:600 12px var(--mono);color:var(--g);margin-bottom:8px}
+.tg .h i{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g)}
+.tg p{margin-bottom:4px}.tg p b{font-weight:600}
+.tg.quiet{border-color:var(--line);background:var(--bg)}.tg.quiet .h{color:var(--muted)}.tg.quiet .h i{background:var(--muted);box-shadow:none}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font:500 22px var(--head)}
+.stat span{font-size:12px;color:var(--muted)}
+.stat.g b{color:var(--g)}
+.empty{font-size:13px;color:var(--muted)}
+
+@media(max-width:1180px){.main{grid-template-columns:1fr 360px}.side{display:none}.mob{display:flex!important}}
+@media(max-width:820px){.app{height:auto;min-height:100vh}.main{grid-template-columns:1fr}.chatp{height:72vh}.ttl .hide{display:none}}
+.mob{display:none;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);overflow-x:auto}
+.mob button{white-space:nowrap;padding:7px 12px;border:1px solid var(--line2);border-radius:999px;font-size:12.5px}
+.mob button.on{border-color:var(--g);color:var(--g)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div style="display:flex;align-items:center;gap:18px">
+      <a class="logo" href="https://awelabs.io" aria-label="AweLabs">awe<span class="u">_</span>labs<span class="cur"></span></a>
+      <div class="ttl"><b data-i="app"></b><span class="pill">demo</span></div>
+    </div>
+    <div class="right"><a class="back" href="https://awelabs.io/#products" data-i="back"></a><div class="lang"><button data-set="ru">RU</button><button data-set="en">EN</button></div></div>
+  </div>
+  <div class="note" data-i="note" data-html></div>
+
+  <div class="main">
+    <aside class="panel side">
+      <div><h4 data-i="hSc"></h4><div class="sc" id="sc"></div></div>
+      <div><h4 data-i="hRate"></h4><ul class="rate" id="rate"></ul></div>
+      <div class="rule" data-i="rule" data-html></div>
+    </aside>
+
+    <section class="panel chatp">
+      <div class="adhd"><div class="adimg">&lt;/&gt;</div><div><b data-i="ad"></b><span data-i="adSub"></span></div></div>
+      <div class="mob" id="mob"></div>
+      <div class="chat" id="chat"></div>
+      <div class="inp"><div class="f" data-i="ph"></div><button class="go" id="go" data-i="run"></button></div>
+    </section>
+
+    <section class="panel rp">
+      <div class="box">
+        <h5><span data-i="hLead"></span><span class="st" id="lst">-</span></h5>
+        <dl class="kv"><dt data-i="kT"></dt><dd id="kT">-</dd><dt data-i="kB"></dt><dd id="kB">-</dd><dt data-i="kO"></dt><dd id="kO">-</dd><dt data-i="kC"></dt><dd id="kC">-</dd></dl>
+        <ul class="steps" id="chk"></ul>
+      </div>
+      <div id="notif"><div class="box"><h5 data-i="hNotif"></h5><div class="empty" data-i="eNotif"></div></div></div>
+      <div class="box"><h5><span data-i="hStat"></span><span class="mono" style="font:11px var(--mono);color:var(--muted);text-transform:none;letter-spacing:0" data-i="today"></span></h5>
+        <div class="stats">
+          <div class="stat"><b id="sM">0</b><span data-i="sM"></span></div>
+          <div class="stat"><b id="sR">0</b><span data-i="sR"></span></div>
+          <div class="stat g"><b id="sQ">0</b><span data-i="sQ"></span></div>
+          <div class="stat"><b id="sF">0</b><span data-i="sF"></span></div>
+          <div class="stat"><b id="sU">0</b><span data-i="sU"></span></div>
+          <div class="stat"><b id="sT">-</b><span data-i="sT"></span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+var T={
+ru:{app:"Квалификатор лидов",back:"← на awelabs.io",
+note:"<b>Демо на выдуманных данных.</b> Выберите тип клиента - бот ответит так же, как в работе: выяснит задачу и бюджет, удержит прайс и передаст специалисту только целевых.",
+hSc:"Кто пишет",hRate:"Прайс, который держит бот",rule:"Правило: <b>контакт специалиста</b> бот даёт только после того, как задача и бюджет понятны и совпадают с прайсом.",
+ad:"Разработка Telegram-ботов и автоматизация",adSub:"площадка объявлений · чат по объявлению",ph:"Выберите сценарий слева или нажмите «Запустить»",run:"Запустить",again:"Ещё раз",
+hLead:"Карточка лида",kT:"Задача",kB:"Бюджет",kO:"Предложено",kC:"Контакт",hNotif:"Уведомление специалисту",eNotif:"Придёт в Telegram, только если лид целевой",
+hStat:"Статистика",today:"сегодня",sM:"сообщений",sR:"ответов бота",sQ:"передано специалисту",sF:"отсеяно",sU:"без ответа",sT:"среднее время ответа",
+client:"Клиент",bot:"бот",dayL:"Сегодня",
+chk:["Выяснил задачу","Узнал бюджет","Сверил с прайсом","Передал специалисту"],
+hot:"целевой",warm:"тёплый",off:"не целевой",
+nHot:"Новый целевой лид",nWarm:"Новый лид, проверить",nOff:"Специалиста не беспокоили",
+rate:[["Простой бот: меню, автоответы","от 3 000 ₽"],["Бот записи / заявок + таблица","от 10 000 ₽"],["Бот с GPT и квалификацией","от 15 000 ₽"],["Полная автоматизация","от 25 000 ₽"]],
+S:[
+ {id:"hot",b:"Целевой клиент",s:"понятная задача, бюджет в прайсе",lvl:"hot",
+  d:[["c","Здравствуйте! Нужен бот для записи клиентов в салон"],
+     ["b","Добрый день! Расскажите, что бот должен уметь: запись к мастерам по времени, напоминания, предоплата?",{t:"Бот записи"},[0]],
+     ["c","Запись к мастерам и напоминания за день"],
+     ["b","Понял. Где сейчас ведёте расписание: таблица, CRM, тетрадь? И какой бюджет закладываете?",{t:"Бот записи + напоминания"}],
+     ["c","В Google-таблице. Бюджет около 15 тысяч"],
+     ["b","Задача понятна и укладывается в бюджет: бот записи с синхронизацией таблицы и напоминаниями - от 10 000 ₽. Передаю специалисту, он свяжется сегодня. Как удобнее: Telegram или телефон?",{b:"~15 000 ₽",o:"от 10 000 ₽"},[1,2]],
+     ["c","Telegram, @salon_demo"],
+     ["b","Спасибо! Специалист напишет вам в Telegram в течение часа.",{c:"@salon_demo"},[3]]],
+  n:["Бот записи в салон: мастера + напоминания за день","Расписание в Google-таблице","Бюджет ~15 000 ₽, предложено от 10 000 ₽","Контакт: @salon_demo"]},
+ {id:"warm",b:"Торгуется",s:"хочет дешевле прайса",lvl:"warm",
+  d:[["c","Сколько стоит бот с GPT, чтобы отвечал клиентам?"],
+     ["b","Добрый день! Бот с GPT и квалификацией заявок - от 15 000 ₽. Где он будет отвечать и сколько обращений в день?",{t:"Бот с GPT"},[0]],
+     ["c","На площадке объявлений, штук 20 в день. А за 5 тысяч сделаете?"],
+     ["b","За 5 000 ₽ реально сделать простого бота: меню и готовые автоответы, без GPT. Бот с GPT - от 15 000 ₽, это стоимость работы, скидок на неё нет. Какой вариант ближе?",{b:"5 000 ₽"},[1,2]],
+     ["c","Давайте тогда простой"],
+     ["b","Хорошо: простой бот с меню и автоответами - от 3 000 ₽. Передаю специалисту, он уточнит сценарии. Куда вам написать?",{t:"Простой бот (вместо GPT)",o:"от 3 000 ₽"}],
+     ["c","+7 900 000-00-00"],
+     ["b","Принято, специалист свяжется сегодня.",{c:"+7 900 000-00-00"},[3]]],
+  n:["Хотел бот с GPT за 5 000 ₽, прайс удержан","Согласился на простой бот, от 3 000 ₽","~20 обращений в день, площадка объявлений","Контакт: +7 900 000-00-00"]},
+ {id:"off",b:"Не по теме",s:"ошибся объявлением или серая услуга",lvl:"off",
+  d:[["c","Ноутбук ещё продаёте?"],
+     ["b","Добрый день! Это объявление про разработку Telegram-ботов и автоматизацию, ноутбуков нет. Если понадобится бот - пишите.",{t:"Не по теме"},[]],
+     ["c","А подписчиков в канал накрутить можете?"],
+     ["b","Накрутку и серые услуги не делаем. Могу предложить честный рост: автопостинг, бот-воронку, рассылку по своей базе - от 10 000 ₽.",{t:"Накрутка - отказ",o:"легальные альтернативы"}],
+     ["c","Не, мне надо накрутка"],
+     ["b","Понял, тогда не сможем помочь. Удачи!",{},[]]],
+  n:null}
+]},
+en:{app:"Lead qualifier",back:"← back to awelabs.io",
+note:"<b>Demo with made-up data.</b> Pick a client type - the bot replies as it does in production: finds out the task and budget, holds the rate card and passes only the right clients to the specialist.",
+hSc:"Who is writing",hRate:"Rate card the bot holds",rule:"Rule: the bot shares <b>the specialist's contact</b> only when the task and budget are clear and match the rate card.",
+ad:"Telegram bot development and automation",adSub:"classifieds platform · listing chat",ph:"Pick a scenario on the left or press \"Run\"",run:"Run",again:"Again",
+hLead:"Lead card",kT:"Task",kB:"Budget",kO:"Offered",kC:"Contact",hNotif:"Notification to specialist",eNotif:"Sent to Telegram only if the lead qualifies",
+hStat:"Stats",today:"today",sM:"messages",sR:"bot replies",sQ:"passed to specialist",sF:"filtered out",sU:"unanswered",sT:"avg reply time",
+client:"Client",bot:"bot",dayL:"Today",
+chk:["Found out the task","Got the budget","Checked the rate card","Passed to specialist"],
+hot:"qualified",warm:"warm",off:"not a fit",
+nHot:"New qualified lead",nWarm:"New lead, check",nOff:"Specialist not disturbed",
+rate:[["Simple bot: menu, auto-replies","from $200"],["Booking / request bot + sheet","from $600"],["GPT bot with qualification","from $900"],["Full automation","from $2,000"]],
+S:[
+ {id:"hot",b:"Qualified client",s:"clear task, budget fits",lvl:"hot",
+  d:[["c","Hi! I need a bot to book clients for my salon"],
+     ["b","Good afternoon! What should it do: booking with stylists by time slot, reminders, prepayment?",{t:"Booking bot"},[0]],
+     ["c","Booking with stylists and a reminder a day before"],
+     ["b","Got it. Where do you keep the schedule now: a spreadsheet, CRM, paper? And what's your budget?",{t:"Booking bot + reminders"}],
+     ["c","In Google Sheets. Budget around $800"],
+     ["b","Clear task and it fits: booking bot synced with your sheet plus reminders - from $600. Passing you to the specialist, they'll reach out today. Telegram or phone?",{b:"~$800",o:"from $600"},[1,2]],
+     ["c","Telegram, @salon_demo"],
+     ["b","Thanks! The specialist will message you on Telegram within an hour.",{c:"@salon_demo"},[3]]],
+  n:["Salon booking bot: stylists + day-before reminders","Schedule in Google Sheets","Budget ~$800, offered from $600","Contact: @salon_demo"]},
+ {id:"warm",b:"Haggling",s:"wants it below the rate card",lvl:"warm",
+  d:[["c","How much is a GPT bot to answer my customers?"],
+     ["b","Good afternoon! A GPT bot with lead qualification is from $900. Where will it answer and how many enquiries per day?",{t:"GPT bot"},[0]],
+     ["c","On a classifieds site, about 20 a day. Can you do it for $300?"],
+     ["b","For $300 we can build a simple bot: menu and ready auto-replies, no GPT. The GPT bot is from $900 - that's the cost of the work, no discounts on it. Which is closer to what you need?",{b:"$300"},[1,2]],
+     ["c","OK, the simple one then"],
+     ["b","Sure: simple bot with menu and auto-replies - from $200. Passing you to the specialist to agree the flows. Where can they reach you?",{t:"Simple bot (instead of GPT)",o:"from $200"}],
+     ["c","+1 555 000 0000"],
+     ["b","Got it, the specialist will contact you today.",{c:"+1 555 000 0000"},[3]]],
+  n:["Wanted a GPT bot for $300, rate card held","Agreed to a simple bot, from $200","~20 enquiries/day, classifieds site","Contact: +1 555 000 0000"]},
+ {id:"off",b:"Off-topic",s:"wrong listing or a grey service",lvl:"off",
+  d:[["c","Is the laptop still for sale?"],
+     ["b","Good afternoon! This listing is about Telegram bot development and automation - no laptops here. If you ever need a bot, write to us.",{t:"Off-topic"},[]],
+     ["c","Can you boost followers for my channel?"],
+     ["b","We don't do fake followers or grey services. We can offer honest growth: auto-posting, a bot funnel, mailings to your own base - from $600.",{t:"Fake followers - declined",o:"legal alternatives"}],
+     ["c","Nah, I need the boost"],
+     ["b","Understood, then we can't help. Good luck!",{},[]]],
+  n:null}
+]}};
+var L='ru';try{L=localStorage.getItem('lq_lang')||((navigator.language||'').slice(0,2)==='ru'?'ru':'en')}catch(e){}
+var $=function(i){return document.getElementById(i)},chat=$('chat'),timers=[],busy=false,cur=0,stats={m:0,r:0,q:0,f:0,u:0,t:[]},greeted=false;
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function wait(ms){return new Promise(function(r){timers.push(setTimeout(r,ms))})}
+function now(){var d=new Date();return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+function apply(){
+  document.documentElement.lang=L;var t=T[L];
+  document.querySelectorAll('[data-i]').forEach(function(el){var v=t[el.dataset.i];if(v==null)return;el.hasAttribute('data-html')?el.innerHTML=v:el.textContent=v});
+  document.querySelectorAll('.lang button').forEach(function(b){b.classList.toggle('on',b.dataset.set===L)});
+  $('rate').innerHTML=t.rate.map(function(r){return'<li>'+esc(r[0])+'<b>'+esc(r[1])+'</b></li>'}).join('');
+  $('sc').innerHTML=t.S.map(function(s,i){return'<button data-s="'+i+'"><b>'+esc(s.b)+'</b><span>'+esc(s.s)+'</span></button>'}).join('');
+  $('mob').innerHTML=t.S.map(function(s,i){return'<button data-s="'+i+'">'+esc(s.b)+'</button>'}).join('');
+  document.querySelectorAll('[data-s]').forEach(function(b){b.onclick=function(){if(!busy)play(+b.dataset.s)}});
+  mark();
+}
+function mark(){document.querySelectorAll('[data-s]').forEach(function(b){b.classList.toggle('on',+b.dataset.s===cur);b.disabled=busy})}
+document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){L=b.dataset.set;try{localStorage.setItem('lq_lang',L)}catch(e){}hardReset();apply()}});
+function setKV(id,v){var d=$(id);d.textContent=v;d.classList.remove('fill');void d.offsetWidth;d.classList.add('fill')}
+function resetLead(){var t=T[L];['kT','kB','kO','kC'].forEach(function(k){$(k).textContent='-'});$('lst').className='st';$('lst').textContent='-';
+  $('chk').innerHTML=t.chk.map(function(c){return'<li>'+esc(c)+'</li>'}).join('');
+  $('notif').innerHTML='<div class="box"><h5>'+t.hNotif+'</h5><div class="empty">'+t.eNotif+'</div></div>'}
+function upStats(){$('sM').textContent=stats.m;$('sR').textContent=stats.r;$('sQ').textContent=stats.q;$('sF').textContent=stats.f;$('sU').textContent=stats.u;
+  $('sT').textContent=stats.t.length?Math.round(stats.t.reduce(function(a,b){return a+b},0)/stats.t.length)+(L==='ru'?' сек':' s'):'-'}
+function hardReset(){timers.forEach(clearTimeout);timers=[];busy=false;stats={m:0,r:0,q:0,f:0,u:0,t:[]};greeted=false;chat.innerHTML='';resetLead();upStats();$('go').disabled=false}
+function msg(cls,who,txt){var t=T[L],d=document.createElement('div');d.className='m '+cls;d.innerHTML='<small><span>'+who+'</span><span>'+now()+'</span></small>'+esc(txt);chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+function typing(c){var d=document.createElement('div');d.className='typing'+(c?' c':'');d.innerHTML='<i></i><i></i><i></i>';chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+async function play(i){
+  busy=true;cur=i;mark();$('go').disabled=true;var t=T[L],S=t.S[i];resetLead();
+  if(!greeted){var dl=document.createElement('div');dl.className='day';dl.textContent=t.dayL;chat.appendChild(dl);greeted=true}
+  else{var sep=document.createElement('div');sep.className='day';sep.textContent='· · ·';chat.appendChild(sep)}
+  var chk=$('chk').children;
+  for(var k=0;k<S.d.length;k++){
+    var row=S.d[k];
+    if(row[0]==='c'){var tc=typing(true);await wait(700+row[1].length*12);tc.remove();msg('c',t.client,row[1]);stats.m++;upStats();}
+    else{var tb=typing(false),sec=8+Math.round(Math.random()*20);await wait(900);tb.remove();msg('b',t.bot,row[1]);stats.r++;stats.t.push(sec);upStats();
+      var f=row[2]||{};if(f.t)setKV('kT',f.t);if(f.b)setKV('kB',f.b);if(f.o)setKV('kO',f.o);if(f.c)setKV('kC',f.c);
+      (row[3]||[]).forEach(function(n){chk[n].className='ok'});
+      await wait(500);}
+  }
+  var lst=$('lst');lst.className='st '+S.lvl;lst.textContent=t[S.lvl];
+  if(S.n){stats.q++;
+    $('notif').innerHTML='<div class="tg'+'"><div class="h"><i></i>Telegram · '+(S.lvl==='hot'?t.nHot:t.nWarm)+'</div>'+S.n.map(function(x,j){return'<p>'+(j===0?'<b>'+esc(x)+'</b>':esc(x))+'</p>'}).join('')+'</div>';}
+  else{stats.f++;chk[3].className='no';chk[0].className='ok';
+    $('notif').innerHTML='<div class="tg quiet"><div class="h"><i></i>'+t.nOff+'</div><p style="color:var(--muted)">'+(L==='ru'?'Лид не целевой - уведомление не отправлено, контакт не выдан.':'Not a fit - no notification sent, no contact shared.')+'</p></div>';}
+  upStats();busy=false;mark();$('go').disabled=false;$('go').textContent=t.again;
+}
+$('go').onclick=function(){if(!busy)play(cur)};
+apply();hardReset();
+</script>
+</body>
+</html>
