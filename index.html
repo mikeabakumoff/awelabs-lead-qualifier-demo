@@ -262,7 +262,7 @@ S:[
 var L='ru';try{L=localStorage.getItem('lq_lang')||((navigator.language||'').slice(0,2)==='ru'?'ru':'en')}catch(e){}
 var $=function(i){return document.getElementById(i)},chat=$('chat'),timers=[],busy=false,cur=0,stats={m:0,r:0,q:0,f:0,u:0,t:[]},greeted=false;
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
-function wait(ms){return new Promise(function(r){timers.push(setTimeout(r,ms))})}
+var SPD=0.6;function wait(ms){return new Promise(function(r){timers.push(setTimeout(r,ms*SPD))})}
 function now(){var d=new Date();return('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
 function apply(){
   document.documentElement.lang=L;var t=T[L];
